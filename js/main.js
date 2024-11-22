@@ -100,13 +100,21 @@ const getNewTaskData = (event) => {
     return { description, id }
 }
 
-const createTask = (event) => {
-    event.preventDefault();
-    const newTaskData = getNewTaskData(event);
+const getCreatedTaskInfo = (event) => new Promise((resolve) => {
+    setTimeout(() => {
+        resolve(getNewTaskData(event));
+    }, 3000)
 
+}) 
+
+const createTask = async (event) => {
+    event.preventDefault();
+    document.getElementById( 'save-task' ).setAttribute('disabled', true);
+    const newTaskData = await getCreatedTaskInfo(event);
+    
     const checkbox = getCheckBoxInput(newTaskData)
     createTaskListItem(getNewTaskData, checkbox);
-
+    
     const tasks = getTasksFromLocalStorage();
     
     const updatedTasks = [
@@ -114,8 +122,9 @@ const createTask = (event) => {
         { id: newTaskData.id, description: newTaskData.description, checked: false }
     ]
     setTasksInLocaStorage(updatedTasks)
-
+    
     document.getElementById('description').value = '';
+    document.getElementById( 'save-task' ).removeAttribute('disabled');
 }
 
 //onload - carrega quando toda a página estiver pronta
