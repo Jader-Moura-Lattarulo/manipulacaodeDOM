@@ -5,6 +5,17 @@ let tasks = [
     {id: 4, description: 'estudar', checked: false},
 ]
 
+const createTaskListItem = (task, checkbox) => {
+    const list = document.getElementById('todo-list');
+    const toDo = document.createElement('li');
+
+    toDo.id = task.id;
+    toDo.appendChild(checkbox);
+    list.appendChild(toDo);
+
+    return toDo;
+}
+
 //manipular o checkbox
 const getCheckBoxInput = ({ id, description, checked }) => {
     const checkbox = document.createElement('input');
@@ -14,7 +25,7 @@ const getCheckBoxInput = ({ id, description, checked }) => {
 
     checkbox.type = 'checkbox';
     checkbox.id = checkboxId;
-    checkbox.checked = checked;
+    checkbox.checked = checked || false;
     
     label.textContent = description;
     label.htmlFor = checkboxId;
@@ -27,8 +38,34 @@ const getCheckBoxInput = ({ id, description, checked }) => {
     return wrapper;
 }
 
+const getNewTaskId = () => {
+    const lastId = tasks[tasks.length - 1]?.id;
+    return lastId ? lastId + 1 : 1;
+}
+
+const getNewTaskData = (event) => {
+    const description = event.target.elements.description.value;
+    const id = getNewTaskId();
+
+    return { description, id }
+}
+
+const createTask = (event) => {
+    event.preventDefault();
+    const newTaskData = getNewTaskData(event);
+    //const { id, description } = newTaskData;
+
+    const checkbox = getCheckBoxInput(newTaskData)
+    createTaskListItem(getNewTaskData, checkbox);
+    
+    tasks = [...tasks, { id: newTaskData.id, description: newTaskData.description, checked: false }]
+}
+
 //onload - carrega quando toda a página estiver pronta
 window.onload = function(){
+    const form = document.getElementById('create-todo-form');
+    form.addEventListener('submit', createTask);
+
     tasks.forEach((task) => {
         const checkbox = getCheckBoxInput(task);
 
