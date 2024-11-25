@@ -151,4 +151,10 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
+
+    & > p {
+        width: 50%;
+        font-size: 1.6rem;
+    }
 }
