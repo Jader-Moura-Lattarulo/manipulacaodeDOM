@@ -3,14 +3,14 @@ const getTasksFromLocalStorage = () => {
     return localTasks ? localTasks : [];
 }
 
-const setTasksInLocaStorage = (tasks) => {
+const setTasksInLocalStorage = (tasks) => {
     window.localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 const removeTask = (taskId) => {
     const tasks = getTasksFromLocalStorage();
     const updatedTasks = tasks.filter(({ id }) => parseInt(id) !== parseInt(taskId));
-    setTasksInLocaStorage(updatedTasks);
+    setTasksInLocalStorage(updatedTasks);
 
     document
         .getElementById("todo-list")
@@ -27,7 +27,7 @@ const removeDoneTasks = () => {
         .map(({ id }) => id)
 
     const updatedTasks = tasks.filter(({ checked }) => !checked);
-    setTasksInLocaStorage(updatedTasks);
+    setTasksInLocalStorage(updatedTasks);
     
     tasksToRemove.forEach((taskToRemove) => {
         document
@@ -65,7 +65,7 @@ const onCheckboxClick = (event) => {
             ? { ...task, checked: event.target.checked }
             : task
     })
-    setTasksInLocaStorage(updatedTasks)
+    setTasksInLocalStorage(updatedTasks)
     counterTasks();
 }
 
@@ -126,7 +126,7 @@ const createTask = async (event) => {
         ...tasks, 
         { id: newTaskData.id, description: newTaskData.description, checked: false }
     ]
-    setTasksInLocaStorage(updatedTasks)
+    setTasksInLocalStorage(updatedTasks)
     
     document.getElementById('description').value = '';
     document.getElementById( 'save-task' ).removeAttribute('disabled');
