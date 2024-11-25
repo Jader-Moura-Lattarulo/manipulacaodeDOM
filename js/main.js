@@ -1,3 +1,20 @@
+const renderTasksProgressData = (tasks) => {
+    let tasksProgress;
+    const tasksProgressDOM = document.getElementById('tasks-progress');
+
+    if(tasksProgressDOM) tasksProgress = tasksProgressDOM;
+    else {
+        const newTasksProgressDOM = document.createElement('div');
+        newTasksProgressDOM.id = 'tasks-progress';
+        document.getElementById('todo-footer').appendChild(newTasksProgressDOM);
+        tasksProgress = newTasksProgressDOM;
+    }
+
+    const doneTasks = tasks.filter(({ checked }) => checked).length;
+    const totalTasks = tasks.length;
+    tasksProgress.textContent = `${doneTasks}/${totalTasks} concluídas`;
+}
+
 const getTasksFromLocalStorage = () => {
     const localTasks = JSON.parse(window.localStorage.getItem('tasks'));
     return localTasks ? localTasks : [];
@@ -11,31 +28,28 @@ const removeTask = (taskId) => {
     const tasks = getTasksFromLocalStorage();
     const updatedTasks = tasks.filter(({ id }) => parseInt(id) !== parseInt(taskId));
     setTasksInLocalStorage(updatedTasks);
+    renderTasksProgressData(updatedTasks);
 
     document
         .getElementById("todo-list")
         .removeChild(document.getElementById(taskId));
-
-    counterTasks();
 }
 
 const removeDoneTasks = () => {
     const tasks = getTasksFromLocalStorage();
-    
     const tasksToRemove = tasks
         .filter(({ checked }) => checked)
         .map(({ id }) => id)
 
     const updatedTasks = tasks.filter(({ checked }) => !checked);
     setTasksInLocalStorage(updatedTasks);
+    renderTasksProgressData(updatedTasks);
     
     tasksToRemove.forEach((taskToRemove) => {
         document
             .getElementById("todo-list")
             .removeChild(document.getElementById(taskToRemove))
     })
-
-    counterTasks();
 }
 
 const createTaskListItem = (task, checkbox) => {
@@ -66,7 +80,7 @@ const onCheckboxClick = (event) => {
             : task
     })
     setTasksInLocalStorage(updatedTasks)
-    counterTasks();
+    renderTasksProgressData(updatedTasks);
 }
 
 //manipular o checkbox
@@ -121,36 +135,15 @@ const createTask = async (event) => {
     createTaskListItem(getNewTaskData, checkbox);
     
     const tasks = getTasksFromLocalStorage();
-    
     const updatedTasks = [
         ...tasks, 
         { id: newTaskData.id, description: newTaskData.description, checked: false }
     ]
     setTasksInLocalStorage(updatedTasks)
-    
+    renderTasksProgressData(updatedTasks);
+
     document.getElementById('description').value = '';
     document.getElementById( 'save-task' ).removeAttribute('disabled');
-
-    counterTasks();
-}
-
-const countTotalTasks = () => {
-    const tasksTodo = getTasksFromLocalStorage();
-    return tasksTodo.length;
-}
-
-const countDoneTasks = () => {
-    const tasks = getTasksFromLocalStorage();
-    const doneTasks = tasks.filter(({ checked }) => checked);
-    console.log(doneTasks);
-    return doneTasks.length;
-}
-
-const counterTasks = () => {
-    const doneTasks = countDoneTasks();
-    const totalTasks = countTotalTasks();
-    const counterTasks = document.getElementById('countCompletedTasks');
-    counterTasks.textContent = `${doneTasks}/${totalTasks} concluídas`
 }
 
 //onload - carrega quando toda a página estiver pronta
@@ -165,5 +158,5 @@ window.onload = function(){
         createTaskListItem(task, checkbox);
     })
 
-    counterTasks();
+    renderTasksProgressData(updatedTasks);
 }

@@ -149,12 +149,8 @@ main {
 footer {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-direction: row-reverse;
+    justify-content: space-between;
     align-items: center;
-
-    & > p {
-        width: 50%;
-        font-size: 1.6rem;
-    }
+    font-size: 1.6rem;
 }
